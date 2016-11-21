@@ -17,7 +17,7 @@ public class Constants {
 	public static final int RIGHT=4;
 	
 	public static final float MOVE_TIME= 1F;
-	public static float timer = MOVE_TIME;
+	
 	public static final int SNAKE_MOVEMENT=32;
 	
 }

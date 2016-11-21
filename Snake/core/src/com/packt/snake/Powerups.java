@@ -14,7 +14,7 @@ public class Powerups {
 	}
 	
 	private void setpowerupType(String powerupType){
-		powerupType
+		powerupType=powerupType;
 	}
 	
 	
