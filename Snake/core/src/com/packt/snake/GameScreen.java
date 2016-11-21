@@ -12,27 +12,20 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.packt.snake.Constants.STATE;
 
 public class GameScreen extends ScreenAdapter {
 	private SpriteBatch batch;
 	private Texture snakeHead;
 	
-	private static final float MOVE_TIME= 1F;
-	private float timer = MOVE_TIME;
-	private static final int SNAKE_MOVEMENT=32;
 	private float snakeX=0;
 	private float snakeY=0;
-	private static final int RIGHT=0;
-	private static final int LEFT=1;
-	private static final int UP=2;
-	private static final int DOWN=3;
-	
-	private int snakeDirection=RIGHT;
+
+	private int snakeDirection=Constants.RIGHT;
 	
 	private Texture apple;
 	private boolean appleAvailable=false;
@@ -48,9 +41,8 @@ public class GameScreen extends ScreenAdapter {
 	private boolean directionSet=false;
 	private boolean hasHit=false;
 	
-	private enum STATE {
-		PLAYING, GAME_OVER
-	}
+	public float timer = Constants.MOVE_TIME;
+	
 	private STATE state=STATE.PLAYING;
 	
 	private BitmapFont bitmapFont;
@@ -60,10 +52,7 @@ public class GameScreen extends ScreenAdapter {
 	
 	private int score=0;
 	
-	private static final int POINTS_PER_APPLE=20;
 	
-	private static final float WORLD_WIDTH=640;
-	private static final float WORLD_HEIGHT=480;
 	
 	private Viewport viewport;
 	private Camera camera;
@@ -86,9 +75,9 @@ public class GameScreen extends ScreenAdapter {
 		snakeBody=new Texture(Gdx.files.internal("snakeBody.png"));
 		bitmapFont = new BitmapFont();
 		camera=new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
-		camera.position.set(WORLD_WIDTH/2,WORLD_HEIGHT/2,0);
+		camera.position.set(Constants.WORLD_WIDTH/2,Constants.WORLD_HEIGHT/2,0);
 		camera.update();
-		viewport=new FitViewport(WORLD_WIDTH, WORLD_HEIGHT,camera);
+		viewport=new FitViewport(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT,camera);
 	}
 	
 	@Override
@@ -105,6 +94,8 @@ public class GameScreen extends ScreenAdapter {
 			checkForRestart();
 		}
 		break;
+		default:
+			break;
 		}		
 		clearScreen();
 		//drawGrid();
@@ -116,13 +107,13 @@ public class GameScreen extends ScreenAdapter {
 			snakeX=0;
 		}
 		if(snakeX<0){
-			snakeX=viewport.getWorldWidth()-SNAKE_MOVEMENT;
+			snakeX=viewport.getWorldWidth()-Constants.SNAKE_MOVEMENT;
 		}
 		if(snakeY>=viewport.getWorldHeight()){
 			snakeY=0;
 		}
 		if(snakeY<0){
-			snakeY=viewport.getWorldHeight()-SNAKE_MOVEMENT;
+			snakeY=viewport.getWorldHeight()-Constants.SNAKE_MOVEMENT;
 		}
 	}
 	
@@ -132,30 +123,30 @@ public class GameScreen extends ScreenAdapter {
 		boolean uPressed = Gdx.input.isKeyPressed(Input.Keys.UP);
 		boolean dPressed = Gdx.input.isKeyPressed(Input.Keys.DOWN);
 		
-		if (lPressed) updateDirection(LEFT);
-		if (rPressed) updateDirection(RIGHT);
-		if (uPressed) updateDirection(UP);
-		if (dPressed) updateDirection(DOWN);
+		if (lPressed) updateDirection(Constants.LEFT);
+		if (rPressed) updateDirection(Constants.RIGHT);
+		if (uPressed) updateDirection(Constants.UP);
+		if (dPressed) updateDirection(Constants.DOWN);
 	}
 	
 	private void moveSnake(){
 		snakeXBeforeUpdate=snakeX;
 		snakeYBeforeUpdate=snakeY;
 		switch(snakeDirection){
-			case RIGHT: {
-				snakeX+=SNAKE_MOVEMENT;
+			case Constants.RIGHT: {
+				snakeX+=Constants.SNAKE_MOVEMENT;
 				return;
 			}
-			case LEFT: {
-				snakeX-=SNAKE_MOVEMENT;
+			case Constants.LEFT: {
+				snakeX-=Constants.SNAKE_MOVEMENT;
 				return;
 			}
-			case UP: {
-				snakeY+=SNAKE_MOVEMENT;
+			case Constants.UP: {
+				snakeY+=Constants.SNAKE_MOVEMENT;
 				return;
 			}
-			case DOWN: {
-				snakeY-=SNAKE_MOVEMENT;
+			case Constants.DOWN: {
+				snakeY-=Constants.SNAKE_MOVEMENT;
 				return;
 			}
 		}
@@ -165,20 +156,20 @@ public class GameScreen extends ScreenAdapter {
 		if (!directionSet && snakeDirection != newSnakeDirection) {
 			directionSet = true;
 			switch (newSnakeDirection) {
-			case LEFT: {
-				updateIfNotOppositeDirection(newSnakeDirection, RIGHT);
+			case Constants.LEFT: {
+				updateIfNotOppositeDirection(newSnakeDirection, Constants.RIGHT);
 			}
 			break;
-			case RIGHT: {
-				updateIfNotOppositeDirection(newSnakeDirection, LEFT);
+			case Constants.RIGHT: {
+				updateIfNotOppositeDirection(newSnakeDirection, Constants.LEFT);
 			}
 			break;
-			case UP: {
-				updateIfNotOppositeDirection(newSnakeDirection, DOWN);
+			case Constants.UP: {
+				updateIfNotOppositeDirection(newSnakeDirection, Constants.DOWN);
 			}
 			break;
-			case DOWN: {
-				updateIfNotOppositeDirection(newSnakeDirection, UP);
+			case Constants.DOWN: {
+				updateIfNotOppositeDirection(newSnakeDirection, Constants.UP);
 			}
 			break;
 			}
@@ -196,8 +187,8 @@ public class GameScreen extends ScreenAdapter {
 	private void checkAndPlaceApple(){
 		if(!appleAvailable){
 			do{
-				appleX=MathUtils.random((int)(viewport.getWorldWidth()/SNAKE_MOVEMENT)-1)*SNAKE_MOVEMENT;
-				appleY=MathUtils.random((int) (viewport.getWorldHeight())/SNAKE_MOVEMENT-1)*SNAKE_MOVEMENT;
+				appleX=MathUtils.random((int)(viewport.getWorldWidth()/Constants.SNAKE_MOVEMENT)-1)*Constants.SNAKE_MOVEMENT;
+				appleY=MathUtils.random((int) (viewport.getWorldHeight())/Constants.SNAKE_MOVEMENT-1)*Constants.SNAKE_MOVEMENT;
 				appleAvailable=true;		
 			} while (appleX==snakeX && appleY == snakeY);
 		}
@@ -284,7 +275,7 @@ public class GameScreen extends ScreenAdapter {
 		if(!hasHit){
 			timer-=delta;
 			if(timer<=0){
-				timer=MOVE_TIME;
+				timer=Constants.MOVE_TIME;
 				moveSnake();
 				checkForOutOfBounds();
 				updateBodyPartsPosition();
@@ -301,9 +292,9 @@ public class GameScreen extends ScreenAdapter {
 	private void doRestart(){
 		state=STATE.PLAYING;
 		bodyParts.clear();
-		snakeDirection=RIGHT;
+		snakeDirection=Constants.RIGHT;
 		directionSet=false;
-		timer=MOVE_TIME;
+		timer=Constants.MOVE_TIME;
 		snakeX=0;
 		snakeY=0;
 		snakeXBeforeUpdate=0;
@@ -313,7 +304,7 @@ public class GameScreen extends ScreenAdapter {
 	}
 	
 	private void addToScore(){
-		score+=POINTS_PER_APPLE;
+		score+=Constants.POINTS_PER_APPLE;
 	}
 	
 	private void drawScore(){
@@ -328,5 +319,7 @@ public class GameScreen extends ScreenAdapter {
 	}
 	
 	//TODO implement splashscreen method
-	//private void splashscreen(){}
+	private void splashscreen(){
+		// O'nun'kawa present
+	}
 }
